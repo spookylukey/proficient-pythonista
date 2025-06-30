@@ -77,6 +77,7 @@ So it looks like this:
 
 .. literalinclude:: ../code/illegalstates/spanner2.py
    :language: python
+   :emphasize-lines: 8-9
 
 
 Our first problem is that we now have to adjust our ``does_spanner_fit_nut`` function. The good news is that the type checker has immediately flagged an error:
@@ -94,6 +95,7 @@ So now we need to update this code, adding in a branch that supports the ``max_s
 
 .. literalinclude:: ../code/illegalstates/check_spanner_nut3.py
    :language: python
+   :emphasize-lines: 8-11
 
 However, your editor/static type checker will now rightly complain:
 
@@ -105,10 +107,11 @@ Our code has a problem – what if someone creates a ``Spanner`` with **both** `
 Quick fix 1
 ===========
 
-Our first approach is what we might call the “validation” approach. We can add a branch ``does_spanner_fit_nut`` that raises an exception at the end:
+Our first approach is what we might call the “validation” approach. We can add some code to the end of ``does_spanner_fit_nut`` that raises an exception:
 
 .. literalinclude:: ../code/illegalstates/check_spanner_nut4.py
    :language: python
+   :emphasize-lines: 12
 
 Now our static type checker is happy — it can see that the function will either always return ``True`` or ``False``, or raise an exception, which is a different type of thing. The error won’t silently pass.
 
@@ -127,6 +130,7 @@ Our second attempt to fix this involves moving the validation closer to the prob
 
 .. literalinclude:: ../code/illegalstates/spanner3.py
    :language: python
+   :emphasize-lines: 11-13
 
 It’s now impossible to create an illegal spanner, and we’ll get an exception at the point in the code that attempts to do so::
 
@@ -187,6 +191,7 @@ Having done this, what does ``does_spanner_fit_nut`` look like? It can be reduce
 
 .. literalinclude:: ../code/illegalstates/check_spanner_nut5.py
    :language: python
+   :emphasize-lines: 8-11
 
 
 In this case, our type checker will correctly **not** complain at us — it understands the ``Spanner`` type alias, and can see that all cases are covered.
@@ -196,6 +201,7 @@ In some cases, if you are writing code like this, it can be important to ensure 
 
 .. literalinclude:: ../code/illegalstates/check_spanner_nut6.py
    :language: python
+   :emphasize-lines: 13
 
 You may notice that your editor greys out the last line and gives a message like this:
 
@@ -209,6 +215,7 @@ With modern python and the `match statement <https://www.geeksforgeeks.org/pytho
 
 .. literalinclude:: ../code/illegalstates/check_spanner_nut7.py
    :language: python
+   :emphasize-lines: 9-15
 
 
 Parse don’t validate
@@ -306,6 +313,7 @@ We then considered switching out ``size`` for two optional fields:
 
 
 .. code-block:: python
+   :emphasize-lines: 3-4
 
    @dataclass
    class Spanner:
