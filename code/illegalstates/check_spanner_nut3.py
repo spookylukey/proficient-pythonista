@@ -1,0 +1,11 @@
+import math
+
+from .spanner2 import Spanner
+from .nuts import Nut
+
+
+def does_spanner_fit_nut(spanner: Spanner, nut: Nut) -> bool:
+    if isinstance(spanner.size, float):
+        return math.isclose(spanner.size, nut.size)
+    if isinstance(spanner.max_size, float):
+        return spanner.max_size >= nut.size

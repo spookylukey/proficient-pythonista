@@ -10,4 +10,5 @@ Lessons in writing the very best Python code. A work in progress!
    :maxdepth: 2
    :caption: Contents:
 
+   context_and_assumptions
    make_illegal_states_unrepresentable

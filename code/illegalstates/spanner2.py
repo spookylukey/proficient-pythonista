@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class Spanner:
     length: float
     mass: float

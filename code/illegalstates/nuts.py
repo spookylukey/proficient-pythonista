@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class Nut:
     size: float
