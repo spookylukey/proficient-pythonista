@@ -363,4 +363,4 @@ The key aims in the principle “make illegal states unrepresentable” are thes
 The methods used to achieve this are:
 
 - Identify invalid states by thinking about where you have product types instead of sum types, and are multiplying possible states instead of adding them.
-- Split types/classes into more but “smaller” types/classes that represent just the valid states.
+- Split types/classes into more but “smaller” types/classes that represent just the valid states. Sometimes this might mean pulling out a few related fields as a group.
