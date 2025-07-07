@@ -2,9 +2,9 @@
 Make illegal states unrepresentable
 ===================================
 
-The mantra “make illegal states unrepresentable”, popularised by `Yaron Minsky’s lecture on Effective ML <https://blog.janestreet.com/effective-ml-revisited/>`_, is a commonly used guideline to help design robust ways of “modelling” data. While it is often hard to do this perfectly, it is a very helpful technique to keep in mind.
+The mantra “make illegal states unrepresentable”, popularised by `Yaron Minsky’s lecture on Effective ML <https://blog.janestreet.com/effective-ml-revisited/>`_, is a commonly-used guideline to help design robust ways of “modelling” data. While it is often hard to do this perfectly, it is a very helpful technique to keep in mind.
 
-There are many blog posts and articles about this principle, using many different programming languages. Some of these have examples that aren’t very compelling, and some almost anti-examples, and many will be confusing if you don’t know other languages. So here is my take on it, using best practice modern Python.
+There are many blog posts and articles about this principle, using many different programming languages. Some of these have examples that aren’t very compelling, some are almost anti-examples in my opinion, and many will be confusing if you don’t know other languages. So here is my take on it, using best practice modern Python.
 
 Before, reading see :doc:`context_and_assumptions` .
 
@@ -34,7 +34,7 @@ We can now make any spanner we want:
    my_spanner = Spanner(size=10, length=150, mass=500)
 
 
-We may have a whole load of code that deals with spanners - boxes that can store spanners, maybe code that shows a visualisation of each spanner etc.
+We may have a whole load of code that deals with spanners – boxes that can store spanners, maybe code that shows a visualisation of each spanner etc.
 
 Now, suppose somewhere in this system we want to know whether a specific spanner could be used with a specific nut. We’ve got some simple nut class:
 
@@ -46,12 +46,12 @@ And we’ve got a very simple function that takes a nut and a spanner and checks
 .. literalinclude:: ../code/illegalstates/check_spanner_nut1.py
    :language: python
 
-(Here we’re using ``math.isclose()`` as best practice when using ``float``, rather than simple equality)
+(Here we’re using ``math.isclose()`` as is best practice when using ``float``, rather than simple equality)
 
 The change
 ==========
 
-All is fine so far. But then, we realise that we have another type of spanner - adjustable spanners.
+All is fine so far. But then, we realise that we have another type of spanner – adjustable spanners.
 
 We now need to make some choices about how to adjust our code. For these spanners, the ``size`` field doesn’t really make sense any more – we instead want something like ``max_size``. We avoid the temptation of having a single ``size`` field and giving it two different meanings – that would be asking for trouble.
 
@@ -87,8 +87,7 @@ Our first problem is that we now have to adjust our ``does_spanner_fit_nut`` fun
    :align: center
    :alt: Argument of type "float | None" cannot be assigned to parameter "a" of type "_SupportsFloatOrIndex" in function "isclose". Type "float | None" is not assignable to type "_SupportsFloatOrIndex". Type "None" is not assignable to type "_SupportsFloatOrIndex". "None" is incompatible with protocol "SupportsFloat". "__float__" is not present. "None" is incompatible with protocol "SupportsIndex". "__index__" is not present (lsp)
 
-The pyright error is perhaps a little obscure, but we get the idea -
-``spanner.size`` **could** be ``None``, instead of ``float``, in which case we
+The pyright error is perhaps a little obscure, but we get the idea – ``spanner.size`` **could** be ``None``, instead of ``float``, in which case we
 can’t use ``math.isclose()``.
 
 So now we need to update this code, adding in a branch that supports the ``max_size`` attribute, and using some ``isinstance()`` checks to exclude the possibility of attributes being ``None``. It could look like this:
@@ -101,25 +100,25 @@ However, your editor/static type checker will now rightly complain:
 
   Function with declared return type "bool" must return value on all code paths
 
-Our code has a problem – what if someone creates a ``Spanner`` with **both** ``size`` and ``max_size`` set to ``None``? We’ve done nothing to prevent that, and the static type checker is rightly pointing out that in this case, it is possible to get all the way through ``does_spanner_fit_nut`` and “fall off the bottom”, in which case the function will return ``None``. This isn’t what we want at all – it’s a bug.
+Our code has a problem – what if someone creates a ``Spanner`` with **both** ``size`` and ``max_size`` set to ``None``? We’ve done nothing to prevent that, and the static type checker is rightly pointing out that in this case, it is possible to get all the way through ``does_spanner_fit_nut()`` and “fall off the bottom”, in which case the function will return ``None``. This isn’t what we want at all – it’s a bug.
 
 
 Quick fix 1
 ===========
 
-Our first approach is what we might call the “validation” approach. We can add some code to the end of ``does_spanner_fit_nut`` that raises an exception:
+Our first approach is what we might call the “validation” approach. We can add some code to the end of ``does_spanner_fit_nut()`` that raises an exception:
 
 .. literalinclude:: ../code/illegalstates/check_spanner_nut4.py
    :language: python
    :emphasize-lines: 12
 
-Now our static type checker is happy — it can see that the function will either always return ``True`` or ``False``, or raise an exception, which is a different type of thing. The error won’t silently pass.
+Now our static type checker is happy — it can see that the function will either always return ``True`` or ``False``, or raise an exception, which is a different type of thing. The error won’t silently pass, and our function that is annotated as returning ``float`` won’t ever return ``None`` instead.
 
 The big problem with this fix is that the validation is happening far too late:
 
 - It’s happening an **runtime** – you’ll only see you have a problem when you actually run the code. We’d like to eliminate this kind of error **before** then, and be sure that it can’t possibly happen.
 
-- If this exception is raised, we’ll get a stack trace showing a problem with a spanner at the point we try to **use** the spanner and call ``does_spanner_fit_nut``. The bug in the code, however, happened elsewhere, at the point we **created** this impossible spanner. We should never have created a spanner with both ``size`` and ``max_size`` set to ``None``. When we see the exception, all we know is that somewhere in the code base we’ve created a bad ``Spanner``, and we now have to search for every place that creates a ``Spanner`` object and check.
+- If this exception is raised, we’ll get a stack trace showing a problem with a spanner at the point we try to **use** the spanner and call ``does_spanner_fit_nut()``. The bug in the code, however, happened elsewhere, at the point we **created** this impossible spanner. We should never have created a spanner with both ``size`` and ``max_size`` set to ``None``. When we see the exception, all we know is that somewhere in the code base we’ve created a bad ``Spanner``, and we now have to search for every place that creates a ``Spanner`` object and check.
 
 
 Quick fix 2
@@ -141,14 +140,16 @@ It’s now impossible to create an illegal spanner, and we’ll get an exception
        ~~~~~~~^^^^^^^^^^^^^^^^^^
      File "<string>", line 7, in __init__
      File "/home/luke/devel/proficient-pythonista/code/illegalstates/spanner3.py", line 13, in __post_init__
-       raise AssertionError("Spanner must have at least one of ``size`` or ``max_size`` defined")
-   AssertionError: Spanner must have at least one of ``size`` or ``max_size`` defined
+       raise AssertionError("Spanner must have at least one of `size` or `max_size` defined")
+   AssertionError: Spanner must have at least one of `size` or `max_size` defined
 
-This is a big improvement. There are still significant problems though.
+This is a big improvement. We now know that there won’t be impossible spanners going through the system, and for buggy code that tries to make them, the stack trace shows the actual bad line of code.
 
-First, there are actually more illegal states that we haven’t yet addressed. What about a ``Spanner`` with **both** ``size`` and ``max_size`` not ``None``? What does that mean, and what should ``does_spanner_fit_nut`` do with that?
+There are still significant problems though.
 
-More critically, our change hasn’t made ``does_spanner_fit_nut`` any easier to write. We now know that the final ``raise AssertionError`` won’t ever happen, which is in some ways good. But:
+First, there are actually more illegal states that we haven’t yet addressed. What about a ``Spanner`` with **both** ``size`` and ``max_size`` not ``None``? What does that mean, and what should ``does_spanner_fit_nut()`` do with that?
+
+More critically, our change hasn’t made ``does_spanner_fit_nut()`` any easier to write. We now know that the final ``raise AssertionError`` won’t ever happen, which is in some ways good. But:
 
 - We only know that because we know about some other code that runs. We can’t use just **local reasoning** to be certain of it – we need to know the other code, and we need to be sure the other code hasn’t changed since we last looked at it.
 
@@ -170,14 +171,15 @@ What we want to express is this. A valid spanner is either:
 - An adjustable spanner with a valid ``max_size``
 
 But not:
+
 - a spanner with neither or both of these attributes.
 
-We can achieve this by having separate **types** for the two cases. We need some new names, so our normal spanner we’ll call ``SingleEndedSpanner`` (anticipating that we might have ``DoubleEndedSpanner`` soon), and we’ll also have ``AdjustableSpanner``. Depending on the existing code,
-we might want to use renaming functionality in the editor to achieve this. (Or, we might deliberately break everything and give it a different name manually, so that we can use type checking tools to find the code that might need updating).
+We can achieve this by having separate **types** for the two cases. We need some new names, so our normal spanner will be called ``SingleEndedSpanner`` (anticipating that we might have ``DoubleEndedSpanner`` soon), and we’ll also have ``AdjustableSpanner``. Depending on the existing code,
+we might want to use renaming functionality in the editor to achieve this. Alternatively, we might deliberately break everything and give it a different name manually, so that we can use type checking tools to find the code that might need updating.
 
 In this case, several of the attributes of spanners, like ``length`` and ``mass``, are common to both kinds of spanner. To avoid duplicating code, we’ll pull these out as a base class which we can then inherit from.
 
-Finally we’ll make ``Spanner`` into an alias that means “SingleEndedSpanner or AjustableSpanner”. This is `union type <https://docs.python.org/3/library/typing.html#typing.Union>`_, also called a “sum type” in some communities.
+Finally we’ll make ``Spanner`` into an alias that means “``SingleEndedSpanner`` or ``AjustableSpanner``”. This is a `union type <https://docs.python.org/3/library/typing.html#typing.Union>`_, also called a “sum type” in some communities.
 
 The code looks like this:
 
@@ -187,7 +189,7 @@ The code looks like this:
 This technique doesn’t always require a new class. Sometimes it can be just a different arrangement of existing types, often using type unions, or lightweight types like tuples.
 
 
-Having done this, what does ``does_spanner_fit_nut`` look like? It can be reduced to just this:
+Having done this, what does ``does_spanner_fit_nut()`` look like? It can be reduced to just this:
 
 .. literalinclude:: ../code/illegalstates/check_spanner_nut5.py
    :language: python
@@ -241,7 +243,7 @@ If the code that parses the CSV files instead were to return our initial ``Spann
 Product and sum types
 =====================
 
-In the programming world, you will often come across the terms “sum types”, “product types” (and “algebraic data types” which is a fancy way to refer to sum and product types). It can be helpful to explain this concepts and use them to think about this problem.
+In the programming world, you will often come across the terms “sum types”, “product types” (and “algebraic data types” which is a fancy way to refer to sum and product types). It can be helpful to explain these concepts and use them to think about this problem.
 
 The simplest example of a product type is a tuple. Consider a 3-tuple which contains 3 booleans. In Python this might look like this:
 
@@ -282,10 +284,10 @@ Now consider the following union type:
 
 .. code-block:: python
 
-   type MyFunkyThing = SignOfNumber | bool
+   type MyWeirdThing = SignOfNumber | bool
 
 
-How many different values could an object of type ``MyFunkyThing`` have?
+How many different values could an object of type ``MyWeirdThing`` have?
 
 In this case we can list them quite easily:
 
@@ -322,9 +324,27 @@ We then considered switching out ``size`` for two optional fields:
        length: float
        mass: float
 
-Now, each of ``size`` and ``max_size`` has become a “sum” or “union” type, which means it gains another possible value: it can be ``None`` as well as any float value. But because these are part of the larger product type, the possible combinations **multiply** together. We’ve now introduced invalid combinations like ``Spanner(size=None, max_size=None)``
+Now, each of ``size`` and ``max_size`` has become a “sum” or “union” type, which means it gains another possible value: it can be ``None`` as well as any float value. But because these are part of the larger product type, the possible combinations **multiply** together. And those combinations include unwanted ones like ``Spanner(size=None, max_size=None)``.
 
-Our preferred solution instead looks like this:
+It can be helpful to imagine the above code with ``*`` and ``+`` signs::
+
+   class Spanner:
+       size: (float + None)
+       *
+       max_size: (float + None)
+       *
+       length: float
+       * 
+       mass: float
+
+When you “multiply out” the brackets, thinking about just the first two fields, you get this, where we can clearly see the illegal states::
+
+  (size: float * max_size: float) +
+  (size: None * max_size: float) +
+  (size: float * max_size: None) +
+  (size: None * max_size, None)
+
+Instead of this, our preferred solution instead looks like the following:
 
 .. code-block:: python
 

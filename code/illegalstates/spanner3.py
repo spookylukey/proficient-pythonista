@@ -10,5 +10,5 @@ class Spanner:
 
     def __post_init__(self) -> None:
         if self.size is None and self.max_size is None:
-            raise AssertionError("Spanner must have at least one of ``size`` or ``max_size`` defined")
+            raise AssertionError("Spanner must have at least one of `size` or `max_size` defined")
 
