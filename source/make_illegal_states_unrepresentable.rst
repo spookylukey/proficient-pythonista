@@ -278,7 +278,7 @@ Tuples are not very descriptive, so often we want to use names for each field, w
        show_menubar: bool
        enable_keyboard_shortcuts: bool
 
-This is just the same as the tuple in terms of number of states, we’ve just added names for each field.
+This is just the same as the tuple in terms of number of states, we’ve just added names for each field. Classes like this are also product types.
 
 Let’s now consider the case of union types. Suppose we want to represent the sign of a number, and we want to represent it with an integer: -1 for negatives, 0 for zero, +1 for positives. We can represent this in Python using something like this:
 
