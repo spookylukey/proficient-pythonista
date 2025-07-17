@@ -124,7 +124,7 @@ The big problem with this fix is that the validation is happening far too late:
 Quick fix 2
 ===========
 
-Our second attempt to fix this involves moving the validation closer to the problem. Specifically, we can put the validation inside the initialiser of ``Spanner`` (sometimes call the constructor). That method is usually ``__init__``. In our case we are using dataclasses, so the ``__init__`` method is written for you. But dataclasses do provided a little hook for your own logic, called ``__post_init__``, where we can put our validation. It looks like this:
+Our second attempt to fix this involves moving the validation closer to the problem. Specifically, we can put the validation inside the initialiser of ``Spanner`` (sometimes call the constructor). That method is usually ``__init__``. In our case we are using dataclasses, so the ``__init__`` method is written for you. But dataclasses do provide a little hook for your own logic, called ``__post_init__``, where we can put our validation. It looks like this:
 
 
 .. literalinclude:: ../code/illegalstates/spanner3.py
