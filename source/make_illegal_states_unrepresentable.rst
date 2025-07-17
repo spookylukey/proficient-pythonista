@@ -6,7 +6,13 @@ The mantra “make illegal states unrepresentable”, popularised by `Yaron Mins
 
 There are many blog posts and articles about this principle, using many different programming languages. Some of these have examples that aren’t very compelling, some are almost anti-examples in my opinion, and many will be confusing if you don’t know other languages. So here is my take on it, using best practice modern Python.
 
-Before, reading see :doc:`context_and_assumptions` .
+Before, reading:
+
+- See :doc:`context_and_assumptions` .
+- It is assumed you have basic understanding of type hints. Some good resources are:
+  
+  - `Python Type Checking Guide on RealPython <https://realpython.com/python-type-checking/>`_, especially the first few sections
+  - The mypy `Type hints cheat sheet <https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html>`_
 
 .. contents:: Contents
 
