@@ -8,12 +8,12 @@ class SpannerCommon:
 
 
 @dataclass(frozen=True, kw_only=True)
-class SingleEndedSpanner:
+class SingleEndedSpanner(SpannerCommon):
     size: float
 
 
 @dataclass(frozen=True, kw_only=True)
-class AdjustableSpanner:
+class AdjustableSpanner(SpannerCommon):
     max_size: float
 
 
