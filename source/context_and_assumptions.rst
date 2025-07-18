@@ -2,7 +2,18 @@
 Context and assumptions
 =======================
 
-The lessons in this guide assume modern Python, with a modern set of tools.
+About you
+---------
+
+I’m assuming you already have learnt the basics of Python. If you haven’t, a course like `Harvard’s CS50’s Introduction to Programming with Python <https://cs50.harvard.edu/python/>`_ would be a good starting point.
+
+I’m trying hard **not** to assume other knowledge – it is a distinctive of these guides that they **don’t** assume you have a background in Computer Science, and they **don’t** assume knowledge of other programming languages or experience from a number of projects.
+
+
+About your project
+------------------
+
+The lessons in this guide assume you are working on a project that uses modern Python, with a modern set of tools and practices.
 
 This means:
 
@@ -24,5 +35,3 @@ This means:
 
   My screen shots will be from Emacs, but you don’t have to use that. VS Code will be fine.
 
-
-I’m also assuming you already have learnt the basics of Python. A course like `Harvard’s CS50’s Introduction to Programming with Python <https://cs50.harvard.edu/python/>`_ would be a good starting point.

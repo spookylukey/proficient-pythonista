@@ -10,7 +10,7 @@ Before, reading:
 
 - See :doc:`context_and_assumptions` .
 - It is assumed you have basic understanding of type hints. Some good resources are:
-  
+
   - `Python Type Checking Guide on RealPython <https://realpython.com/python-type-checking/>`_, especially the first few sections
   - The mypy `Type hints cheat sheet <https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html>`_
 
@@ -340,7 +340,7 @@ It can be helpful to imagine the above code with ``*`` and ``+`` signs::
        max_size: (float + None)
        *
        length: float
-       * 
+       *
        mass: float
 
 When you “multiply out” the brackets, thinking about just the first two fields, you get this, where we can clearly see the illegal states::
