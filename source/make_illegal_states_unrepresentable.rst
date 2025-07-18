@@ -6,7 +6,7 @@ The mantra “make illegal states unrepresentable”, popularised by `Yaron Mins
 
 There are many blog posts and articles about this principle, using many different programming languages. Some of these have examples that aren’t very compelling, some are almost anti-examples in my opinion, and many will be confusing if you don’t know other languages. So here is my take on it, using best practice modern Python.
 
-Before, reading:
+Before reading:
 
 - See :doc:`context_and_assumptions` .
 - It is assumed you have basic understanding of type hints. Some good resources are:
@@ -122,7 +122,7 @@ Now our static type checker is happy — it can see that the function will eithe
 
 The big problem with this fix is that the validation is happening far too late:
 
-- It’s happening an **runtime** – you’ll only see you have a problem when you actually run the code. We’d like to eliminate this kind of error **before** then, and be sure that it can’t possibly happen.
+- It’s happening at **runtime** – you’ll only see you have a problem when you actually run the code. We’d like to eliminate this kind of error **before** then, and be sure that it can’t possibly happen.
 
 - If this exception is raised, we’ll get a stack trace showing a problem with a spanner at the point we try to **use** the spanner and call ``does_spanner_fit_nut()``. The bug in the code, however, happened elsewhere, at the point we **created** this impossible spanner. We should never have created a spanner with both ``size`` and ``max_size`` set to ``None``. When we see the exception, all we know is that somewhere in the code base we’ve created a bad ``Spanner``, and we now have to search for every place that creates a ``Spanner`` object and check.
 
@@ -130,7 +130,7 @@ The big problem with this fix is that the validation is happening far too late:
 Quick fix 2
 ===========
 
-Our second attempt to fix this involves moving the validation closer to the problem. Specifically, we can put the validation inside the initialiser of ``Spanner`` (sometimes call the constructor). That method is usually ``__init__``. In our case we are using dataclasses, so the ``__init__`` method is written for you. But dataclasses do provide a little hook for your own logic, called ``__post_init__``, where we can put our validation. It looks like this:
+Our second attempt to fix this involves moving the validation closer to the problem. Specifically, we can put the validation inside the initialiser of ``Spanner`` (sometimes imprecisely called the constructor). That method is usually ``__init__``. In our case, we are using dataclasses, so the ``__init__`` method is written for you. But dataclasses do provide a little hook for your own logic, called ``__post_init__``, where we can put our validation. It looks like this:
 
 
 .. literalinclude:: ../code/illegalstates/spanner3.py
@@ -159,7 +159,7 @@ More critically, our change hasn’t made ``does_spanner_fit_nut()`` any easier 
 
 - We only know that because we know about some other code that runs. We can’t use just **local reasoning** to be certain of it – we need to know the other code, and we need to be sure the other code hasn’t changed since we last looked at it.
 
-- The type checker doesn’t know about the logic we put in the ``__post_init__`` method, and so if we try to remove the ``raise AssertionError`` validation, it will complain at us again. Type checkers rely on **types** as their source of truth, and can’t do advanced logic based on code that checks **values**, especially if that code is in a different part of the code base.
+- The type checker doesn’t know about the logic we put in the ``__post_init__`` method, and so if we try to remove the ``raise AssertionError`` validation from ``does_spanner_fit_nut()``, it will complain at us again. Type checkers rely on **types** as their source of truth, and can’t do advanced logic based on code that checks **values**, especially if that code is in a different part of the code base.
 
 - This also means we’ve now got duplication – the same validation is running in multiple places, which means it could easily get out of sync.
 
@@ -169,7 +169,7 @@ Can we do better?
 The better fix
 ==============
 
-The answer is to move our check to the type level, and make it impossible to represent the illegal state.
+The answer is to move our check to the type level, changing the definition of our type to make it impossible to even represent the illegal state.
 
 What we want to express is this. A valid spanner is either:
 
@@ -192,7 +192,9 @@ The code looks like this:
 .. literalinclude:: ../code/illegalstates/spanner4.py
    :language: python
 
-This technique doesn’t always require a new class. Sometimes it can be just a different arrangement of existing types, often using type unions, or lightweight types like tuples.
+It’s important to note that our new ``Spanner`` type exists really only for the benefit of static type checking and writing type signatures more succinctly. ``Spanner`` isn’t a “concrete” type like ``SingleEndedSpanner`` or ``AdjustableSpanner`` and there are no objects for which ``type(obj)`` would return ``Spanner``.
+
+This technique doesn’t always require new classes. Sometimes it can be just a different arrangement of existing types, often using type unions, or lightweight types like tuples.
 
 
 Having done this, what does ``does_spanner_fit_nut()`` look like? It can be reduced to just this:
@@ -216,7 +218,7 @@ You may notice that your editor greys out the last line and gives a message like
     Type analysis indicates code is unreachable
 
 
-This is a reassuring sign you are doing it right – on the assumption that this function is being passed a ``Spanner`` object (which should also be checked by the type checker), there is no way that we can get to the last line, and the type checker is now explicitly confirming that to us. If something changed, like we added ``DoubleEndedSpanner`` as another option, this line would immediately become a type error, and our code wouldn’t pass static type checks.
+This is a reassuring sign you are doing it right – on the assumption that this function is being passed a ``Spanner`` object (which should also be checked by the type checker), there is no way that we can get to the last line, and the type checker is now explicitly confirming that to us. If something changed, like we added ``DoubleEndedSpanner`` as another option in the ``Spanner`` alias, this line would immediately become a type error, and our code wouldn’t pass static type checks, which is what we want.
 
 With modern python and the `match statement <https://www.geeksforgeeks.org/python/python-match-case-statement/>`_, there is also a nicer way to write this code. The ``isinstance`` checks turn into “pattern matching” that pulls out the field values:
 
@@ -249,9 +251,9 @@ If the code that parses the CSV files instead were to return our initial ``Spann
 Product and sum types
 =====================
 
-In the programming world, you will often come across the terms “sum types”, “product types” (and “algebraic data types” which is a fancy way to refer to sum and product types). It can be helpful to explain these concepts and use them to think about this problem.
+In the programming world, you will often come across the terms “sum types”, “product types” (and “algebraic data types” which is a fancy way to refer to sum and product types). It’s helpful to understand these concepts and use them to think about this problem.
 
-The simplest example of a product type is a tuple. Consider a 3-tuple which contains 3 booleans. In Python this might look like this:
+The simplest example of a product type is a tuple. Consider a 3-tuple which contains 3 booleans. In Python the type hint might look like this:
 
 .. code-block:: python
 
