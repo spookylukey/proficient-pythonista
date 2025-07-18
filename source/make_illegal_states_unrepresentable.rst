@@ -118,7 +118,7 @@ Our first approach is what we might call the “validation” approach. We can a
    :language: python
    :emphasize-lines: 12
 
-Now our static type checker is happy — it can see that the function will either always return ``True`` or ``False``, or raise an exception, which is a different type of thing. The error won’t silently pass, and our function that is annotated as returning ``float`` won’t ever return ``None`` instead.
+Now our static type checker is happy — it can see that the function will either always return ``True`` or ``False``, or raise an exception, which is a different type of thing. The error won’t silently pass, and our function that is annotated as returning ``bool`` won’t ever return ``None`` instead.
 
 The big problem with this fix is that the validation is happening far too late:
 
