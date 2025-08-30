@@ -9,6 +9,8 @@ I’m assuming you already have learnt the basics of Python. If you haven’t, a
 
 I’m trying hard **not** to assume other knowledge – it is a distinctive of these guides that they **don’t** assume you have a background in Computer Science, and they **don’t** assume knowledge of other programming languages or experience from a number of projects.
 
+However, in a few cases, I’ll add notes for those who may be coming from another language and need to know the different way that Python works.
+
 
 About your project
 ------------------

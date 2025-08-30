@@ -15,6 +15,7 @@ To see things that are planned, have a look at the `GitHub issues <https://githu
    :caption: Contents:
 
    context_and_assumptions
+   parameterisation
    make_illegal_states_unrepresentable
 
 
