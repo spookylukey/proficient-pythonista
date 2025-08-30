@@ -434,7 +434,7 @@ so that client code that doesn't care just uses the default:
 .. code-block:: python
    :emphasize-lines: 1,2
 
-   def draw_square(x: int, y: int, size: int, make_turtle: Callable[[], Turtle] = Turtle):
+   def draw_square(x: int, y: int, size: int, *, make_turtle: Callable[[], Turtle] = Turtle):
        turtle = make_turtle()
        turtle.penup()
        turtle.goto(x, y)
@@ -443,9 +443,22 @@ so that client code that doesn't care just uses the default:
            turtle.forward(size)
            turtle.left(90)
 
+The ``make_turtle`` parameter here has a complex type hint which might require a bit of breaking down:
 
-To use this, we could write a ``make_turtle`` function that creates a turtle and
-modifies it. Suppose we want to hide the turtle when drawing squares:
+.. code-block:: python
+
+   make_turtle: Callable[[], Turtle] = Turtle
+
+This means:
+
+- we have a parameter called ``make_turtle``
+- which must be a callable (like a function or a class, some ``foo`` that you can call: ``foo()``)
+- this callable must take no parameters (the ``[]`` bit)
+- …and it must return a ``Turtle`` instance
+- the default value of this parameter is ``Turtle`` (the class itself – which is indeed a callable, and it does indeed return a Turtle instance when you call it like ``Turtle()``, so it matches the requirement in the type hint).
+  
+
+To use this function, we could write our own function to pass as the ``make_turtle`` parameter. It must create a turtle but it could also modify it before returning it. Suppose we want to hide the turtle when drawing squares:
 
 .. code-block:: python
 
