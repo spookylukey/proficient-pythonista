@@ -31,7 +31,7 @@ Let’s start with a class that stores some basic information about a spanner. W
    :align: center
 
 
-(At this point, I’m not going to worry about units, or exactly what the measurements are, or whether people who are really into spanners are going to object to this. Let’s say the units are in mm and grams, and leave it at that…)
+(At this point, I’m not going to worry about units, or exactly what the measurements are, or whether the spanner-nerds are going to object to this. Let’s say the units are in mm and grams, and leave it at that…)
 
 We can now make any spanner we want:
 
