@@ -93,7 +93,11 @@ Our first problem is that we now have to adjust our ``does_spanner_fit_nut`` fun
    :align: center
    :alt: Argument of type "float | None" cannot be assigned to parameter "a" of type "_SupportsFloatOrIndex" in function "isclose". Type "float | None" is not assignable to type "_SupportsFloatOrIndex". Type "None" is not assignable to type "_SupportsFloatOrIndex". "None" is incompatible with protocol "SupportsFloat". "__float__" is not present. "None" is incompatible with protocol "SupportsIndex". "__index__" is not present (lsp)
 
-The pyright error is perhaps a little obscure, but we get the idea – ``spanner.size`` **could** be ``None``, instead of ``float``, in which case we
+Pyright complains:
+
+  Argument of type "float | None" cannot be assigned to parameter "a" of type "_SupportsFloatOrIndex" in function "isclose".
+
+This error is perhaps a little obscure, but we get the idea – ``spanner.size`` **could** be ``None``, instead of ``float``, in which case we
 can’t use ``math.isclose()``.
 
 So now we need to update this code, adding in a branch that supports the ``max_size`` attribute, and using some ``isinstance()`` checks to exclude the possibility of attributes being ``None``. It could look like this:
