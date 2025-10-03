@@ -224,7 +224,7 @@ You may notice that your editor greys out the last line and gives a message like
 
 This is a reassuring sign you are doing it right – on the assumption that this function is being passed a ``Spanner`` object (which should also be checked by the type checker), there is no way that we can get to the last line, and the type checker is now explicitly confirming that to us. If something changed, like we added ``DoubleEndedSpanner`` as another option in the ``Spanner`` alias, this line would immediately become a type error, and our code wouldn’t pass static type checks, which is what we want.
 
-With modern python and the `match statement <https://www.geeksforgeeks.org/python/python-match-case-statement/>`_, there is also a nicer way to write this code. The ``isinstance`` checks turn into “pattern matching” that pulls out the field values:
+With modern Python and the `match statement <https://www.geeksforgeeks.org/python/python-match-case-statement/>`_, there is also a nicer way to write this code. The ``isinstance`` checks turn into “pattern matching” that pulls out the field values:
 
 
 .. literalinclude:: ../code/illegalstates/check_spanner_nut7.py
