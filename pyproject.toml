@@ -7,9 +7,20 @@ requires-python = ">=3.13"
 dependencies = [
     "ipython>=9.3.0",
     "pre-commit>=4.4.0",
+    "pygame>=2.6.1",
     "sphinx>=8.2.3",
 ]
 
 
 [tool.uv.build-backend]
 module-root = "code"
+
+[tool.ruff]
+line-length = 120
+target-version = 'py313'
+
+[tool.ruff.lint]
+extend-select = [
+  "UP",  # enable pyupgrade
+  "I",  # enable isort
+]
