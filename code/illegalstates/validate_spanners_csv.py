@@ -1,5 +1,6 @@
 import csv
 
+
 def read_spanners_csv(filename: str) -> list[dict], list[str]:
     valid_items = []
     errors = []

@@ -36,4 +36,3 @@ This means:
 - You are using some kind of modern editor or system that will provide immediate error checking feedback, preferably using the same type checker as above.
 
   My screen shots will be from Emacs, but you don’t have to use that. VS Code will be fine.
-

@@ -1,8 +1,8 @@
 import math
 from typing import assert_never
 
-from .spanner4 import AdjustableSpanner, SingleEndedSpanner, Spanner
 from .nuts import Nut
+from .spanner4 import AdjustableSpanner, SingleEndedSpanner, Spanner
 
 
 def does_spanner_fit_nut(spanner: Spanner, nut: Nut) -> bool:

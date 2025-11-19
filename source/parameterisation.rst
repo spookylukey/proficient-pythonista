@@ -456,7 +456,7 @@ This means:
 - this callable must take no parameters (the ``[]`` bit)
 - …and it must return a ``Turtle`` instance
 - the default value of this parameter is ``Turtle`` (the class itself – which is indeed a callable, and it does indeed return a Turtle instance when you call it like ``Turtle()``, so it matches the requirement in the type hint).
-  
+
 
 To use this function, we could write our own function to pass as the ``make_turtle`` parameter. It must create a turtle but it could also modify it before returning it. Suppose we want to hide the turtle when drawing squares:
 
@@ -652,4 +652,3 @@ several problems often surface:
 
 Sometimes a bit of 'duplicated' code is far better than these problems, so use
 this technique with care.
-

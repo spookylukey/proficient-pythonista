@@ -1,7 +1,7 @@
 import math
 
-from .spanner1 import Spanner
 from .nuts import Nut
+from .spanner1 import Spanner
 
 
 def does_spanner_fit_nut(spanner: Spanner, nut: Nut) -> bool:
