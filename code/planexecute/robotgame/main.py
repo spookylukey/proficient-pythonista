@@ -1,18 +1,21 @@
 import pygame
 
+from robotgame.grid import Grid
 from robotgame.robot import Robot
 
-from .constants import HEIGHT, TILE_SIZE, WIDTH, X_TILES, Y_TILES
+from .constants import TILE_SIZE, X_TILES, Y_TILES
+
+GRID = Grid(x_tiles=X_TILES, y_tiles=Y_TILES, tile_size=TILE_SIZE)
 
 
 def main():
     pygame.init()  # Init Pygame
-    win = pygame.display.set_mode((WIDTH, HEIGHT))
+    win = pygame.display.set_mode((GRID.width, GRID.height))
     clock = pygame.time.Clock()
     pygame.key.set_repeat(150, 150)
 
     # Create robot instance and set initial position
-    robot = Robot()
+    robot = Robot(grid=GRID)
 
     # Main game loop
     running = True
@@ -22,27 +25,35 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    robot.angle = (robot.angle + 90) % 360
+                    robot.turn_left()
                 elif event.key == pygame.K_RIGHT:
-                    robot.angle = (robot.angle - 90) % 360
+                    robot.turn_right()
                 elif event.key == pygame.K_UP:
-                    direction = pygame.Vector2(1, 0).rotate(-robot.angle)
-                    robot.pos += direction * TILE_SIZE
+                    robot.go_forward()
                 elif event.key == pygame.K_DOWN:
-                    direction = pygame.Vector2(1, 0).rotate(-robot.angle)
-                    robot.pos -= direction * TILE_SIZE
-
-        # Keep robot within grid bounds
-        robot.pos.x = max(0, min(robot.pos.x, (X_TILES - 1) * TILE_SIZE))
-        robot.pos.y = max(0, min(robot.pos.y, (Y_TILES - 1) * TILE_SIZE))
+                    robot.go_backwards()
 
         # Draw background
         win.fill((255, 255, 255))
+        for y in range(0, GRID.y_tiles):
+            pygame.draw.line(
+                win,
+                color=(0, 0, 0),
+                start_pos=(0, y * GRID.tile_size),
+                end_pos=(GRID.width, y * GRID.tile_size),
+            )
+        for x in range(0, GRID.x_tiles):
+            pygame.draw.line(
+                win,
+                color=(0, 0, 0),
+                start_pos=(x * GRID.tile_size, 0),
+                end_pos=(x * GRID.tile_size, GRID.height),
+            )
 
         # Draw robot
         rotated_img = pygame.transform.rotate(robot.img, robot.angle)
         new_rect = rotated_img.get_rect(center=robot.rect.center)
-        new_rect.center = (robot.pos.x + TILE_SIZE / 2, robot.pos.y + TILE_SIZE / 2)
+        new_rect.center = (robot.pos.x, robot.pos.y)
         win.blit(rotated_img, new_rect.topleft)
 
         pygame.display.update()
