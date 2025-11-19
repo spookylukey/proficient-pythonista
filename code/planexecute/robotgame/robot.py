@@ -12,11 +12,10 @@ class Robot:
         self.angle = 90  # Degrees
         # Start in center grid cell:
         self.grid_pos = pygame.Vector2(grid.x_tiles // 2, grid.y_tiles // 2)
-        self.half_grid_offset = pygame.Vector2(self.grid.tile_size / 2, self.grid.tile_size / 2)
 
     @property
     def pos(self) -> pygame.Vector2:
-        return self.grid_pos * self.grid.tile_size + self.half_grid_offset
+        return self.grid_pos * self.grid.tile_size + self.grid.half_offset
 
     def turn_left(self) -> None:
         self.angle = (self.angle + 90) % 360

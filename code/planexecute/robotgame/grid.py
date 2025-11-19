@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from functools import cached_property
 
+from pygame import Vector2
+
 
 @dataclass(frozen=True)
 class Grid:
@@ -15,3 +17,7 @@ class Grid:
     @cached_property
     def height(self) -> int:
         return self.tile_size * self.y_tiles
+
+    @cached_property
+    def half_offset(self) -> Vector2:
+        return Vector2(self.tile_size / 2, self.tile_size / 2)
