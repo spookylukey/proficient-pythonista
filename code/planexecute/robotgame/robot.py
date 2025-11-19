@@ -7,7 +7,7 @@ from .grid import Grid
 class Robot:
     def __init__(self, grid: Grid) -> None:
         self.grid = grid
-        self.img = pygame.image.load(BASE_DIR / "robotgame/assets/robot_v2.png").convert_alpha()
+        self.img = pygame.image.load(BASE_DIR / "robotgame/assets/robot_v2.png")  # .convert_alpha()
         self.rect = self.img.get_rect()
         self.angle = 90  # Degrees
         # Start in center grid cell:
@@ -15,6 +15,9 @@ class Robot:
 
     @property
     def pos(self) -> pygame.Vector2:
+        """
+        Top left position of object in world coordinates
+        """
         return self.grid_pos * self.grid.tile_size + self.grid.half_offset
 
     def turn_left(self) -> None:
@@ -36,3 +39,9 @@ class Robot:
             x=max(0, min(grid_pos.x, self.grid.x_tiles - 1)),
             y=max(0, min(grid_pos.y, self.grid.y_tiles - 1)),
         )
+
+    def draw(self, surface: pygame.Surface):
+        rotated_img = pygame.transform.rotate(self.img, self.angle)
+        new_rect = rotated_img.get_rect(center=self.rect.center)
+        new_rect.center = (self.pos.x, self.pos.y)
+        surface.blit(rotated_img, new_rect.topleft)

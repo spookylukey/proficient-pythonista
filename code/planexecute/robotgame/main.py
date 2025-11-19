@@ -1,9 +1,10 @@
 import pygame
 
-from robotgame.grid import Grid
-from robotgame.robot import Robot
-
 from .constants import TILE_SIZE, X_TILES, Y_TILES
+from .goods import Chest
+from .grid import Grid
+from .robot import Robot
+from .world import World
 
 GRID = Grid(x_tiles=X_TILES, y_tiles=Y_TILES, tile_size=TILE_SIZE)
 
@@ -16,6 +17,8 @@ def main():
 
     # Create robot instance and set initial position
     robot = Robot(grid=GRID)
+    chests = [Chest(grid=GRID, at_position=(x, 0)) for x in range(0, 5)]
+    world = World(robot=robot, chests=chests)
 
     # Main game loop
     running = True
@@ -50,11 +53,8 @@ def main():
                 end_pos=(x * GRID.tile_size, GRID.height),
             )
 
-        # Draw robot
-        rotated_img = pygame.transform.rotate(robot.img, robot.angle)
-        new_rect = rotated_img.get_rect(center=robot.rect.center)
-        new_rect.center = (robot.pos.x, robot.pos.y)
-        win.blit(rotated_img, new_rect.topleft)
+        # Draw stuff
+        world.draw(win)
 
         pygame.display.update()
         clock.tick(60)
