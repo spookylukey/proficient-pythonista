@@ -157,7 +157,7 @@ This is a big improvement. We now know that there won’t be impossible spanners
 
 There are still significant problems though.
 
-First, there are actually more illegal states that we haven’t yet addressed. What about a ``Spanner`` with **both** ``size`` and ``max_size`` not ``None``? What does that mean, and what should ``does_spanner_fit_nut()`` do with that?
+First, there are actually more illegal states that we haven’t yet addressed. What about a ``Spanner`` with **both** ``size`` and ``max_size`` set to floats? What does that mean, and what should ``does_spanner_fit_nut()`` do with that?
 
 More critically, our change hasn’t made ``does_spanner_fit_nut()`` any easier to write. We now know that the final ``raise AssertionError`` won’t ever happen, which is in some ways good. But:
 
@@ -196,7 +196,7 @@ The code looks like this:
 .. literalinclude:: ../code/illegalstates/spanner4.py
    :language: python
 
-It’s important to note that our new ``Spanner`` type exists really only for the benefit of static type checking and writing type signatures more succinctly. ``Spanner`` isn’t a “concrete” type like ``SingleEndedSpanner`` or ``AdjustableSpanner`` and there are no objects for which ``type(obj)`` would return ``Spanner``.
+It’s important to note that our new ``Spanner`` type exists really only for the benefit of static type checking and writing type signatures more succinctly. ``Spanner`` isn’t a “concrete” type like ``SingleEndedSpanner`` or ``AdjustableSpanner`` and there are no objects for which ``type(obj) == Spanner``.
 
 This technique doesn’t always require new classes. Sometimes it can be just a different arrangement of existing types, often using type unions, or lightweight types like tuples.
 
@@ -284,7 +284,7 @@ Tuples are not very descriptive, so often we want to use names for each field, w
        show_menubar: bool
        enable_keyboard_shortcuts: bool
 
-This is just the same as the tuple in terms of number of states, we’ve just added names for each field. Classes like this are also product types.
+This is just the same as the tuple in terms of number of states, we’ve simply added names for each field. Classes like this are also product types.
 
 Let’s now consider the case of union types. Suppose we want to represent the sign of a number, and we want to represent it with an integer: -1 for negatives, 0 for zero, +1 for positives. We can represent this in Python using something like this:
 
