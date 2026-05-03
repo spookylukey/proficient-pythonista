@@ -592,8 +592,8 @@ Classes as exceptions
 ---------------------
 
 Another place you see classes being used is in the ``except`` clause of a
-try/except/finally statement. No surprises for guessing that we can parameterise
-those classes too.
+try/except/finally statement. No prizes for guessing that we can parameterise
+those use too.
 
 For example, the following code implements a very generic strategy of attempting
 an action that could fail, and retrying with exponential backoff until a maximum
