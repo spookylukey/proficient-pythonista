@@ -163,6 +163,14 @@ More critically, our change hasn’t made ``does_spanner_fit_nut()`` any easier 
 
 - We only know that because we know about some other code that runs. We can’t use just **local reasoning** to be certain of it – we need to know the other code, and we need to be sure the other code hasn’t changed since we last looked at it.
 
+  **Local reasoning is extremely important:**
+
+  As `Richard Gabriel wrote <https://www.dreamsongs.com/Files/PatternsOfSoftware.pdf>`_:
+
+    “The primary feature for easy maintenance is locality: Locality is that
+    characteristic of source code that enables a programmer to understand that
+    source by looking at only a small portion of it.”
+
 - The type checker doesn’t know about the logic we put in the ``__post_init__`` method, and so if we try to remove the ``raise AssertionError`` validation from ``does_spanner_fit_nut()``, it will complain at us again. Type checkers rely on **types** as their source of truth, and can’t do advanced logic based on code that checks **values**, especially if that code is in a different part of the code base.
 
 - This also means we’ve now got duplication – the same validation is running in multiple places, which means it could easily get out of sync.
