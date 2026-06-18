@@ -114,7 +114,7 @@ and in Python most things you come across are in fact objects. This includes:
 
 * functions and methods
 
-* builtin types and custom classes.
+* builtin/custom types and classes (the classes themselves, not just instances of them)
 
 The last two are the ones that are the most surprising, especially if you are
 coming from other languages.
